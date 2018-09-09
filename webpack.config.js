@@ -1,8 +1,9 @@
 var webpack = require("webpack");
 var path = require("path");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-    entry: './src/js/index.jsx',
+    entry: './src/js/app.js',
     mode: 'development',
     devServer: {
         contentBase: "./dist", //本地服务器所加载的页面所在的目录
@@ -28,31 +29,34 @@ module.exports = {
             test: /(\.jsx|\.js)$/,
             use: {
                 loader: "babel-loader",
-                query:
-                    {
-                        presets: ['es2015', 'react'],
-                        plugins: ['react-html-attrs']
-                    },
+                options: {
+                    presets: ['es2015', 'react'],
+                    plugins: [
+                        ['import', [{libraryName: "antd", style: 'css'}]],
+                        'react-html-attrs'
+                    ]
+                }
             },
 
-            exclude: /node_modules/
+            exclude: /(node_modules|dist)/
         },
             {
-                test: /\.css$/,
+                test: /\.(css)$/,
                 use: [
                     {
                         loader: 'style-loader'
                     },
                     {
-                        loader: 'css-loader', options: {
-                           // module: true,
-                           // importLoaders: 1,
-                           // localIdentName: '[name]__[local]__[hash:base64:5]'
-                        }
+                        loader: 'css-loader', options: {}
                     }
-                ]
-            }]
+                ],
+                exclude: /(dist)/
+            }
+        ]
+
     },
+
+    plugins: [],
     output: {
         path: __dirname + "/dist/",
         filename: "bundle.js"
