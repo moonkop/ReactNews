@@ -37,71 +37,99 @@ gulp.task('minify-css', function () {
 gulp.task('dev',
     ['less', 'minify-css', 'browserSync']
 );
+let webpackDevServer = null;
 
 gulp.task('watch', ['less'], function () {
     gulp.watch('src/less/*.less', ['less']);
+
 })
 
 gulp.task('default', ['watch']);
 
-gulp.task('test-dev', function () {
-
+gulp.task('dev',['less'],function()
+{
+    gulp.watch('src/less/*.less', ['less','reload']);
     var webpackOptions = {
         entry: './src/js/app.js',
         mode: 'development',
+        devServer: {
+            contentBase: "./dist", //本地服务器所加载的页面所在的目录
+            historyApiFallback: true, //不跳转
+            inline: false,
+            clientLogLevel: 'info',
+            //  hot: true,
+            watchOptions: {
+                aggregateTimeout: 300,
+                poll: 1000,
+                ignored: /node_modules/
+            },
+            overlay: {
+                errors: true,
+                warnings: false
+            },
+            compress: false,
+            //   open:true,
+            port: 80
+        },
         module: {
             rules: [{
                 test: /(\.jsx|\.js)$/,
                 use: {
                     loader: "babel-loader",
-
-                    query:
-                        {
-                            presets: ['es2015', 'react'],
-                            plugins: ['react-html-attrs']
-
-                        },
+                    options: {
+                        presets: ['es2015', 'react'],
+                        plugins: [
+                            ['import', [{libraryName: "antd", style: 'css'}]],
+                            'react-html-attrs'
+                        ]
+                    }
                 },
 
-                exclude: /node_modules/
-            }
+                exclude: /(node_modules|dist)/
+            },
+                {
+                    test: /\.(css)$/,
+                    use: [
+                        {
+                            loader: 'style-loader'
+                        },
+                        {
+                            loader: 'css-loader', options: {}
+                        }
+                    ],
+                    exclude: /(dist)/
+                }
             ]
+
         },
 
         plugins: [],
         output: {
-            path: "/d/WorkSpace/reactTrial2/dist/",
+            path: __dirname + "/dist/",
             filename: "bundle.js"
         }
     }
-
-    var serverOptions = {
-        contentBase: "./dist", //本地服务器所加载的页面所在的目录
-        historyApiFallback: true, //不跳转
-        inline: false,
-        clientLogLevel: 'info',
-        //  hot: true,
-        watchOptions: {
-            aggregateTimeout: 300,
-            poll: 1000,
-            ignored: /node_modules/
-        },
-        overlay: {
-            errors: true,
-            warnings: false
-        },
-        compress: false,
-        //   open:true,
-        port: 80
-    }
-
-
+    var serverOptions =webpackOptions.devServer;
     var webpack = Webpack(webpackOptions);
-    var server = new WebpackDevServer(webpack, serverOptions);
-    server.listen('80', 'localhost',function(err){
+    webpackDevServer = new WebpackDevServer(webpack, serverOptions);
+    webpackDevServer.listen('80', 'localhost',function(err){
         if(err) throw new gutil.PluginError("webpack-dev-server", err);
-        gutil.log("[webpack-dev-server]", "http://localhost:8080/webpack-dev-server/index.html");
+        gutil.log("[webpack-dev-server]", "http://localhost/webpack-dev-server");
     });
+})
+
+
+gulp.task('reload', function () {
+    if (webpackDevServer === null) {
+
+    }else {
+        webpackDevServer.sockWrite(webpackDevServer.sockets, 'ok')
+    }
+});
+
+gulp.task('test-dev', function () {
+
+
 
 
 })
