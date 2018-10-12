@@ -23,6 +23,7 @@
     "browser-sync": "^2.13.0",
     "css-loader": "^0.25.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "fetch": "^1.1.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.4.0",
     "gulp-clean-css": "^2.0.10",

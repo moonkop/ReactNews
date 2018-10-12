@@ -7,13 +7,18 @@ import MobileIndex from './components/mobile_index'
 
 
 class Root extends React.Component {
+
     render() {
+
+
+        let mediaThreshold = 800;
+
         return (
             <div>
-              <MediaQuery query='(min-width:1224px)'>
+              <MediaQuery query={"(min-width:"+mediaThreshold+"px)"}>
                   <PCIndex></PCIndex>
               </MediaQuery>
-                <MediaQuery query='(max-width:1224px)'>
+                <MediaQuery query={"(max-width:"+mediaThreshold+"px)"}>
                     <MobileIndex></MobileIndex>
                 </MediaQuery>
             </div>

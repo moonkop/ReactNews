@@ -46,12 +46,12 @@ gulp.task('watch', ['less'], function () {
 
 gulp.task('default', ['watch']);
 
-gulp.task('dev',['less'],function()
-{
-    gulp.watch('src/less/*.less', ['less','reload']);
+gulp.task('dev', ['less'], function () {
+    gulp.watch('src/less/*.less', ['less', 'reload']);
     var webpackOptions = {
         entry: './src/js/app.js',
         mode: 'development',
+		    devtool:'eval-source-map',
         devServer: {
             contentBase: "./dist", //本地服务器所加载的页面所在的目录
             historyApiFallback: true, //不跳转
@@ -79,57 +79,67 @@ gulp.task('dev',['less'],function()
                     options: {
                         presets: ['es2015', 'react'],
                         plugins: [
-                            ['import', [{libraryName: "antd", style: 'css'}]],
+                            [
+                                'import', [{libraryName: "antd", style: 'css'}]],
                             'react-html-attrs'
                         ]
                     }
                 },
-
                 exclude: /(node_modules|dist)/
-            },
-                {
-                    test: /\.(css)$/,
-                    use: [
-                        {
-                            loader: 'style-loader'
-                        },
-                        {
-                            loader: 'css-loader', options: {}
-                        }
-                    ],
-                    exclude: /(dist)/
-                }
+            }, {
+                test: /\.(css)$/,
+                use: [
+                    {loader: 'style-loader'},
+                    {loader: 'css-loader', options: {}}
+                ],
+                exclude: /(dist)/
+            }
             ]
-
         },
-
         plugins: [],
         output: {
             path: __dirname + "/dist/",
             filename: "bundle.js"
         }
     }
-    var serverOptions =webpackOptions.devServer;
+    var serverOptions = webpackOptions.devServer;
     var webpack = Webpack(webpackOptions);
     webpackDevServer = new WebpackDevServer(webpack, serverOptions);
-    webpackDevServer.listen('80', 'localhost',function(err){
-        if(err) throw new gutil.PluginError("webpack-dev-server", err);
+    webpackDevServer.listen('80', 'localhost', function (err) {
+        if (err)
+        {
+            throw new gutil.PluginError("webpack-dev-server", err);
+        }
         gutil.log("[webpack-dev-server]", "http://localhost/webpack-dev-server");
     });
 })
 
+var obj={
+    a:1123
+}
+
+function fun(arg)
+{
+    console.log(this.a);
+}
+
+fun(444);
+
+
+fun.call(obj,444);
+
 
 gulp.task('reload', function () {
-    if (webpackDevServer === null) {
+    if (webpackDevServer === null)
+    {
 
-    }else {
+    } else
+    {
         webpackDevServer.sockWrite(webpackDevServer.sockets, 'ok')
     }
 });
 
 gulp.task('test-dev', function () {
-
-
 
 
 })

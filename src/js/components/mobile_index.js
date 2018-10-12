@@ -1,5 +1,7 @@
 import React from 'react';
 import MobileHeader from './mobile_header';
+import MobileFooter from './mobile_footer';
+
 
 
 class MobileIndex extends React.Component {
@@ -7,7 +9,7 @@ class MobileIndex extends React.Component {
         return (
             <div id='mobile'>
                 <MobileHeader></MobileHeader>
-
+<MobileFooter></MobileFooter>
             </div>
         );
     }
